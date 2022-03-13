@@ -1,0 +1,98 @@
+﻿@page "/Sites"
+@using RadioControlledDrivingSites.Client.Services
+@inject HttpClient httpClient
+@inject NavigationManager navigationManager
+@inject ISiteService siteService
+<div class="container">
+	<h3>Sites</h3>
+
+	<div class="input-group mb-3">
+		<span class="input-group-text text-muted rounded-3">Etsi nimestä, paikasta tai kuvauksesta</span>
+		<input class="form-control" @onkeyup="Search" @bind-value="@searchString" @bind-value:event="oninput" id="search" type="search" placeholder="söörz term" />
+	</div>
+
+
+	@foreach (var site in searchResults)
+	{
+		<div class="row bg-info p-3 mt-4 rounded-3">
+			<div class="col" style="font-family: 'Carter One', cursive;">
+				@site.Name
+				@{
+					var navTo = $"/ModifySite/{site.Id}";
+				}<small>
+					<a href="@navTo">
+						<span class="badge bg-dark" style="margin-left: 15px;">
+							<i class="fa-solid fa-pen-to-square"></i>
+							muokkaa
+						</span>
+					</a>
+					<span class="badge bg-dark" style="margin-left: 5px;">
+						<i class="fa-solid fa-earth-europe"></i>
+						<a href="map/@FormatCoordinates(site)" style="color: white; text-decoration: none;">kartta</a>
+					</span>
+				</small>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-3 fst-italic">Paikka</div>
+			<div class="col-sm-9 mb-2">@site.Location</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-3 fst-italic">Kuvaus</div>
+			<div class="col-sm-9 mb-2">@site.Description</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-3 fst-italic">Ajoalusta</div>
+			<div class="col-sm-9 mb-4">@site.Environment</div>
+		</div>
+	}
+</div>
+
+@code {
+	List<SiteDto> sites = new List<SiteDto>();
+	string errorMessage = String.Empty;
+	private string searchString = "";
+	private List<SiteDto> searchResults;
+
+	protected override async Task OnParametersSetAsync()
+	{
+		var tmp = await siteService.GetAllSites();
+		if (tmp.Success)
+		{
+			sites = tmp.Data;
+			searchResults = sites;
+		}
+		else
+		{
+			errorMessage = tmp.Message;
+		}
+		StateHasChanged();
+	}
+
+	private async void Search()
+	{
+		if (searchString.Length > 2)
+		{
+			var tmp = sites
+				.Where(x => x.Name.ToLower().Contains(searchString.ToLower())
+					|| x.Location.ToLower().Contains(searchString.ToLower())
+					|| x.Description.ToLower().Contains(searchString)).ToList();
+			searchResults = tmp;
+		}
+		else
+		{
+			searchResults = sites;
+		}
+		StateHasChanged();
+	}
+
+	private string FormatCoordinates(SiteDto site)
+	{
+		var parts = site.LongitudeLattitude
+			.Split(",")
+			.Select(x => x.Trim())
+			.ToArray();
+		return $"{parts[0]}/{parts[1]}";
+	}
+
+}

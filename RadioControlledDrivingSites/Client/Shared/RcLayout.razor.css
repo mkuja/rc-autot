@@ -1,0 +1,22 @@
+﻿.menu {
+    display: flex;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #0dcaf0;
+    height: 4rem;
+    padding-left: 1rem;
+}
+
+.content {
+    margin-left: 1rem;
+    margin-top: 1rem;
+}
+
+@media screen and (max-width: 500px) {
+    .menu {
+        height: 8rem;
+    }
+    
+}

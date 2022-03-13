@@ -1,0 +1,21 @@
+﻿.menu-items-container {
+    
+}
+
+.nav-item {
+    font-family: 'IBM Plex Serif', serif;
+    font-family: 'Roboto', sans-serif;    font-size: larger;
+    font-family: 'Faster One', cursive;
+    font-size: larger;
+    margin-left: 10px;
+    margin-right: 10px;
+    display: inline-block;
+}
+
+::deep a:link {
+    color: #412000;
+}
+::deep a:visited {
+    color: #572e00;
+}
+

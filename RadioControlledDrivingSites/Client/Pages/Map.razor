@@ -1,0 +1,62 @@
+﻿@page "/Map/{lat:decimal}/{lng:decimal}"
+@page "/Map"
+
+@using RadioControlledDrivingSites.Client.Services
+@using Newtonsoft.Json
+
+@inject IJSRuntime JsRuntime
+@inject ISiteService siteService
+
+<h3>Kartta</h3>
+
+<div class="center">
+	<div id="map" style="height:600px;width:95%;"></div>
+</div>
+
+@code {
+	[Parameter]
+	public decimal? lat { get; set; }
+	[Parameter]
+	public decimal? lng { get; set; }
+
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			MapInitializer initObject;
+			// Prepare initObject for initMap.
+			if (lat != null && lng != null)
+			{
+				initObject = new MapInitializer((decimal)lat, (decimal)lng, 11);
+			}
+			else
+			{
+				initObject = new MapInitializer(61.900797491669806M, 25.395963745511487M, 6);
+			}
+
+			await JsRuntime.InvokeVoidAsync("initMap", initObject);
+			var sites = await siteService.GetAllSites();
+			if (sites.Success)
+			{
+				var convertedSites = sites.Data
+					.Select(x => new SiteDtoToMapMarkersConverter(x))
+					.ToArray();
+				var json = JsonConvert.SerializeObject(convertedSites);
+				Console.WriteLine(json);
+				var points = await JsRuntime.InvokeAsync<IJSObjectReference>(
+					"eval", json);
+
+				Console.WriteLine("points below:");
+				await JsRuntime.InvokeVoidAsync("console.log", points);
+				await JsRuntime.InvokeVoidAsync("plotMap", points);
+			}
+		}
+
+
+	}
+
+	protected override async Task OnParametersSetAsync()
+	{
+	}
+}

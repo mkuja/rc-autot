@@ -1,0 +1,14 @@
+﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+
+@import url('https://fonts.googleapis.com/css2?family=Carter+One&family=Faster+One&family=Roboto&display=swap');
+
+html, body {
+    font-family: 'Faster One', cursive;
+    font-family: 'Carter One', cursive;
+    font-family: 'Roboto', sans-serif;
+    box-sizing: border-box;
+}
+
+.mun-button-group-varjo {
+    box-shadow: 3px 3px 8px;
+}

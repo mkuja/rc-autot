@@ -1,0 +1,22 @@
+﻿@using System.Xml
+@using BingMapsSDSToolkit.GeodataAPI
+
+<div onclick="@OnCloseCb" class="mun-modal">
+	<div class="mun-modal-content rounded">
+		<h3>Koordinaattien lisääminen ajopaikalle</h3>
+		<p>
+			Koordinaatit saa kopioitua avaamalla selaimesta uuden välilehden (CTRL+T), ja menemällä Google-karttoihin osoitteessa https://maps.google.fi/ .
+			Kartoissa klikkaa hiiren oikealla napilla kontekstivalikko auki, ja klikkaa koordinaatteja kopioidaksesi ne leikepöydälle. Lopuksi liitä ne
+			lomakkeeseen omalle paikalleen klikkaamalla lomakkeen kenttää, ja painamalla näppäimistöltä CTRL+V. Alla on vielä kuva selvennykseksi
+			koordinaattien kopioimiseksi.
+		</p>
+		<img class="img-thumbnail rounded-3" src="Resources/google-maps-sieppaus.jpg" />
+		<button onclick="@OnCloseCb" class="btn btn-primary" type="button">Sulje</button>
+	</div>
+</div>
+
+@code {
+
+	[Parameter]
+	public Action OnCloseCb { get; set; }
+}
