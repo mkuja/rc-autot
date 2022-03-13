@@ -41,13 +41,16 @@
                     infoWindow = new google.maps.InfoWindow({
                         content: markerPoint.infoWindowContent
                     });
-                    marker.addListener("click", () => {
+                    marker.addListener("mouseover", () => {
                         infoWindow.open({
                             anchor: marker,
                             map: map,
                             shouldFocus: false
                         });
                     });
+                    marker.addListener("mouseout", () => {
+		                    infoWindow.close();
+	                    });
                 }
 
                 // Push markers to the array

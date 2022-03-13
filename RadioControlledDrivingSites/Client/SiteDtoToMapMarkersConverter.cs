@@ -55,6 +55,16 @@ public class SiteDtoToMapMarkersConverter
         }
     }
 
+
+    public async Task UpdateAddressToInfoWindowContent()
+    {
+        var g = new GeocodeReverser();
+        var coords = _site.LongitudeLattitude.Split(",").Select(x => Convert.ToDouble(x, new CultureInfo("en-US"))).ToList();
+        var address = await g.GetAddressData(coords[0], coords[1]);
+        infoWindowContent += $"<hr><p>{address.First().FormattedAddress}</p>";
+    }
+
+
     public SiteDtoToMapMarkersConverter(SiteDto site)
     {
         _site = site;

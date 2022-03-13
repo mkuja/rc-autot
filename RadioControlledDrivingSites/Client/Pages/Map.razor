@@ -39,16 +39,19 @@
 			var sites = await siteService.GetAllSites();
 			if (sites.Success)
 			{
-				var convertedSites = sites.Data
-					.Select(x => new SiteDtoToMapMarkersConverter(x))
-					.ToArray();
+				var convertedSites = new List<SiteDtoToMapMarkersConverter>();
+				foreach (var siteDto in sites.Data)
+				{
+					var site = new SiteDtoToMapMarkersConverter(siteDto);
+					await site.UpdateAddressToInfoWindowContent();
+					convertedSites.Add(site);
+				}
 				var json = JsonConvert.SerializeObject(convertedSites);
 				Console.WriteLine(json);
 				var points = await JsRuntime.InvokeAsync<IJSObjectReference>(
 					"eval", json);
 
 				Console.WriteLine("points below:");
-				await JsRuntime.InvokeVoidAsync("console.log", points);
 				await JsRuntime.InvokeVoidAsync("plotMap", points);
 			}
 		}
